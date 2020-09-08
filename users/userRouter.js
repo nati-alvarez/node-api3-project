@@ -4,7 +4,7 @@ const { restart } = require('nodemon');
 
 const router = express.Router();
 
-router.post('/', (req, res) => {
+router.post('/', validateUser, (req, res) => {
   // do your magic!
 });
 
@@ -52,6 +52,9 @@ function validateUserId(req, res, next) {
 
 function validateUser(req, res, next) {
   // do your magic!
+  if(!req.body) return res.status(400).json({message: "missing user data"});
+  if(!req.body.name) return res.status(400).json({message: "missing required name field"});
+  next();
 }
 
 function validatePost(req, res, next) {
