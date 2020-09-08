@@ -13,11 +13,15 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/:id', validatePostId, (req, res) => {
-  res.send("check log")
+  res.status(200).json(req.post);
 });
 
-router.delete('/:id', (req, res) => {
-  // do your magic!
+router.delete('/:id', validatePostId, (req, res) => {
+  db.remove(req.post.id).then(deletedPost=>{
+    res.status(200).json(req.post);
+  }).catch(err=>{
+    next(err)
+  })
 });
 
 router.put('/:id', (req, res) => {
