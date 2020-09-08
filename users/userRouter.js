@@ -48,8 +48,12 @@ router.delete('/:id', (req, res) => {
   // do your magic!
 });
 
-router.put('/:id', (req, res) => {
-  // do your magic!
+router.put('/:id', [validateUserId, validateUser], (req, res, next) => {
+  db.update(req.user.id, req.body).then(updatedUser=>{
+    res.status(200).json({id: req.user.id, ...req.body});
+  }).catch(err=>{
+    next(err);
+  })
 });
 
 //custom middleware
