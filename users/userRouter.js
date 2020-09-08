@@ -14,7 +14,7 @@ router.post('/', validateUser, (req, res, next) => {
 
 router.post('/:id/posts', [validateUserId, validatePost], (req, res, next) => {
   const post = {...req.body, user_id: req.user.id};
-  
+
   insertPost(post).then(newPost=>{
     res.status(201).json(newPost);
   }).catch(err=>{
@@ -35,8 +35,13 @@ router.get('/:id', validateUserId, (req, res) => {
   res.status(200).json(req.user);
 });
 
-router.get('/:id/posts', (req, res) => {
+router.get('/:id/posts', validateUserId, (req, res, next) => {
   // do your magic!
+  db.getUserPosts(req.user.id).then(posts=>{
+    res.status(200).json(posts);
+  }).catch(err=>{
+    next(err);
+  })
 });
 
 router.delete('/:id', (req, res) => {
