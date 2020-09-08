@@ -12,8 +12,8 @@ router.get('/', (req, res, next) => {
   })
 });
 
-router.get('/:id', (req, res) => {
-  // do your magic!
+router.get('/:id', validatePostId, (req, res) => {
+  res.send("check log")
 });
 
 router.delete('/:id', (req, res) => {
@@ -27,7 +27,15 @@ router.put('/:id', (req, res) => {
 // custom middleware
 
 function validatePostId(req, res, next) {
-  // do your magic!
+  const {id: postId} = req.params;
+
+  db.getById(postId).then(post=>{
+    if(!post) return res.status(404).json({message: "invalid post id"});
+    req.post = post;
+    next();
+  }).catch(err=>{
+    next(err);
+  })
 }
 
 module.exports = router;
