@@ -24,8 +24,12 @@ router.delete('/:id', validatePostId, (req, res) => {
   })
 });
 
-router.put('/:id', (req, res) => {
-  // do your magic!
+router.put('/:id', [validatePostId, validatePost], (req, res) => {
+  db.update(req.post.id, req.body).then(updatedPost=>{
+    res.status(200).json({id: req.post.id, ...req.body});
+  }).catch(err=>{
+    next(err);
+  })
 });
 
 // custom middleware
@@ -40,6 +44,13 @@ function validatePostId(req, res, next) {
   }).catch(err=>{
     next(err);
   })
+}
+
+function validatePost(req, res, next){
+  const changes = req.body;
+  if(!changes) return res.status(400).json({message: "missing post data"})
+  if(!changes.text) return res.status(400).json({message: "missing required text field"});
+  next();
 }
 
 module.exports = router;
