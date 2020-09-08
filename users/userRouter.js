@@ -4,8 +4,12 @@ const { restart } = require('nodemon');
 
 const router = express.Router();
 
-router.post('/', validateUser, (req, res) => {
-  // do your magic!
+router.post('/', validateUser, (req, res, next) => {
+  db.insert(req.body).then(user=>{
+    res.status(201).json(user);
+  }).catch(err=>{
+    next(err);
+  })
 });
 
 router.post('/:id/posts', validatePost, (req, res) => {
