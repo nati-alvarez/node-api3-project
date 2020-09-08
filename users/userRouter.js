@@ -1,6 +1,6 @@
 const express = require('express');
 const db = require('./userDb');
-const { restart } = require('nodemon');
+const {insert: insertPost} = require("../posts/postDb");
 
 const router = express.Router();
 
@@ -12,8 +12,14 @@ router.post('/', validateUser, (req, res, next) => {
   })
 });
 
-router.post('/:id/posts', validatePost, (req, res) => {
-  // do your magic!
+router.post('/:id/posts', [validateUserId, validatePost], (req, res, next) => {
+  const post = {...req.body, user_id: req.user.id};
+  
+  insertPost(post).then(newPost=>{
+    res.status(201).json(newPost);
+  }).catch(err=>{
+    next(err);
+  })
 });
 
 router.get('/', (req, res, next) => {
