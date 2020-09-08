@@ -2,6 +2,7 @@ const express = require('express');
 const server = express();
 
 const userRoutes = require("./users/userRouter");
+const postRoutes = require("./posts/postRouter");
 
 server.use(express.json());
 
@@ -20,6 +21,7 @@ server.use(logger);
 
 //rotues
 server.use("/api/users", userRoutes);
+server.use("/api/posts", postRoutes);
 
 //error handling middleware
 server.use((err, req, res, next)=>{
